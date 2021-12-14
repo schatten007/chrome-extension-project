@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="../assets/bootstrap-5.1.3-dist/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div class="container-fluid my-5">
+      <!-- Section 1 Start -->
+      <section class="container-md p-4 shadow-lg">
+        <h1 class="display-5">Fetch Excel Data Section</h1>
+        <h4 class="h4 fs-2 fw-normal">
+          Upload And Convert Excel File into JSON in Javascript
+        </h4>
+        <div class="panel-body my-3">
+          <!-- Input type file to upload excel file -->
+          <input
+            class=""
+            type="file"
+            id="fileUpload"
+            accept=".xls,.xlsx"
+          /><br />
+          <button class="btn btn-primary my-2" type="button" id="uploadExcel">
+            Convert
+          </button>
+          <button class="btn btn-danger" id="discardButton">
+            Discard Data
+          </button>
+          <br />
+          <p class="fs-3">JSON Data</p>
+          <!-- Render parsed JSON data here -->
+          <textarea
+            class="shadow-sm bg-light border-0 w-100"
+            disabled
+            id="jsonData"
+          >
+          </textarea>
+        </div>
+      </section>
+      <!-- Section 1 End -->
+
+      <!-- Section 2 Start -->
+      <section class="container-md p-4 shadow-lg my-5">
+        <h1 class="display-5">Mapping Excel Data to Inputs Section</h1>
+        <div class="row my-3 mx-0 px-0">
+          <div class="col-lg-6">
+            <label class="fw-normal form-label" for="current-url"
+              >Current URL</label
+            >
+            <input
+              disabled
+              type="url"
+              name="current-url"
+              id="current-url"
+              class="form-control"
+              placeholder="URL Displayed Here"
+            />
+          </div>
+        </div>
+        <h3 class="h4 fs-2 fw-normal">
+          Table to display excel column names and field identifiers
+        </h3>
+      </section>
+      <!-- Section 2 End -->
+    </div>
+  </body>
+  <script src="../assets/bootstrap-5.1.3-dist/js/bootstrap.min.js"></script>
+  <script
+    type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"
+  ></script>
+  <script
+    type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"
+  ></script>
+  <script src="options.js"></script>
+</html>
