@@ -5,6 +5,7 @@ const fillFieldsButton = document.getElementById("fill-fields");
 const nextRowButton = document.getElementById("next-row-button");
 const prevRowButton = document.getElementById("prev-row-button");
 const resetRowsButton = document.getElementById("reset-rows-button");
+const autofillButton = document.getElementById("autofill-button");
 // SPAN
 const currentRowSpan = document.getElementById("current-row");
 
@@ -64,6 +65,8 @@ fillFieldsButton.addEventListener("click", async () => {
         if (tabs.length == 0) return;
         //   Send message to content script to retrieve Form Fields
         chrome.tabs.sendMessage(tabs[0].id, { "action": "fillFormFields" });
+        // Set Display If IDs Found
+        // chrome.storage.local.get(['IdFound'], data => setDisplay(data.idFound));
     });
 });
 
@@ -86,12 +89,40 @@ prevRowButton.addEventListener("click", () => {
     });
 });
 
+// Start Script to automatically fill and submit the data into form
+autofillButton.addEventListener("click", () => {
+    console.log('Autofill button clicked');
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        // Return if none open
+        if (tabs.length == 0) return;
+        //   Send message to content script to start autofill
+        chrome.tabs.sendMessage(tabs[0].id, { "action": "startAutofill" });
+    });
+});
+
 resetRowsButton.addEventListener("click", resetRows);
 
-currentRowSpan.addEventListener("load", () => {
+window.onload = () => {
     console.log('Onload Ran');
     // Set value of row span on window load
     chrome.storage.local.get(['currentRow'], (data) => {
-        currentRowSpan.innerHTML = data.currentRow;
+        // console.log(data.idFound);
+        currentRowSpan.innerHTML = data.currentRow + 1;
+        // setDisplay(data.idFound);
     });
+};
+
+// Message Listener 
+chrome.runtime.onMessage.addListener((message) => {
+    switch (message.action) {
+        case "renderRows":
+            chrome.storage.local.get(['currentRow'], (data) => {
+                currentRowSpan.innerHTML = data.currentRow + 1;
+            });
+    }
 });
+
+const setDisplay = (idFound) => {
+    let displayOptionsContainer = document.getElementById("field-detected");
+    if (!idFound) displayOptionsContainer.classList.add('hidden');
+}

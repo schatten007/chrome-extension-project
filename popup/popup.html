@@ -15,22 +15,30 @@
     <title>Popup</title>
   </head>
   <body>
-    <div class="container">
-      <h1 class="h3">Excel Form Mapper</h1>
+    <div class="container m-1">
+      <h1 class="h3 display-4">Excel Form Mapper</h1>
       <h3>Current Row to fill: <span id="current-row">1</span></h3>
       <button class="btn-sm btn-primary" id="fetchtags">
-        Fetch Text Fields
+        Detect Text Fields
       </button>
-      <button class="btn-sm btn-secondary" id="fill-fields">
-        Fill Form Fields
-      </button>
-      <button class="btn-sm btn-danger" id="prev-row-button">
-        Previous Row
-      </button>
-      <button class="btn-sm btn-success" id="next-row-button">Next Row</button>
-      <button class="btn-sm btn-primary" id="reset-rows-button">
-        Reset Rows
-      </button>
+
+      <div id="field-detected">
+        <button class="btn-sm btn-secondary" id="fill-fields">
+          Fill Form Fields
+        </button>
+        <button class="btn-sm btn-danger" id="prev-row-button">
+          Previous Row
+        </button>
+        <button class="btn-sm btn-success" id="next-row-button">
+          Next Row
+        </button>
+        <button class="btn-sm btn-primary" id="reset-rows-button">
+          Reset Rows
+        </button>
+        <button class="btn-sm btn-warning" id="autofill-button">
+          Auto Fill
+        </button>
+      </div>
     </div>
     <script src="../assets/bootstrap-5.1.3-dist/js/bootstrap.min.js"></script>
     <script src="./popup.js"></script>
