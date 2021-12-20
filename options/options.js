@@ -6,7 +6,7 @@ document.getElementById("fileUpload").addEventListener("change", (event) => {
     selectedFile = event.target.files[0];
 });
 
-// Parse and Save Excel Data into chrome sync storage
+// Parse and Save Excel Data into chrome local storage
 document.getElementById("uploadExcel").addEventListener("click", () => parseExcelData());
 
 // Discarding Excel Data from chrome local storage
@@ -19,7 +19,7 @@ document.getElementById("discardButton").addEventListener("click", () => {
 
 
 
-// Save Excel data into Sync Storage 
+// Save Excel data into Chrome Local Storage 
 const saveExcelData = (data) => {
     console.log(data);
     chrome.storage.local.set({ "excelData": data }, () => {
@@ -73,7 +73,8 @@ window.onload = () => {
 
 
 const generateTable = () => {
-    chrome.storage.local.get(['excelData', 'inputIds'], (data) => {
+    console.clear();
+    chrome.storage.local.get(['excelData', 'inputIds', 'mode'], (data) => {
         const excelData = data.excelData;
         const inputIds = data.inputIds;
         const keys = Object.keys(excelData[0]);
@@ -86,9 +87,6 @@ const generateTable = () => {
         console.log('Form Input Ids');
         console.log(inputIds);
 
-        /*
-            Header Code
-         */
         let headers = ['#', 'Excel Column', 'Mapped To (ID)'];
         let table = document.createElement('table');
         table.id = 'map-table';
@@ -96,26 +94,28 @@ const generateTable = () => {
         let headerRow = document.createElement('tr');
         headerRow.classList.add('table-secondary');
 
-        headers.forEach(headerText => {
-            let header = document.createElement('th');
-            let textNode = document.createTextNode(headerText);
-            header.appendChild(textNode);
-            headerRow.appendChild(header);
-        });
-        table.appendChild(headerRow);
+        generateHeaders(table, headers, headerRow);
+        generateRows(mappedData, inputIds, table, data.mode);
 
-        generateRows(mappedData, inputIds, table);
-
-
-
-        document.getElementById("data-table").appendChild(table);
+        const tableContainer = document.getElementById("data-table");
+        if (!tableContainer.hasChildNodes())
+            tableContainer.appendChild(table);
+        else
+            tableContainer.replaceChild(table, tableContainer.childNodes[0]);
     });
 };
 
-const generateRows = (mappedData, inputIds, table) => {
-    /*
-           Row Code
-        */
+const generateHeaders = (table, headers, headerRow) => {
+    headers.forEach(headerText => {
+        let header = document.createElement('th');
+        let textNode = document.createTextNode(headerText);
+        header.appendChild(textNode);
+        headerRow.appendChild(header);
+    });
+    table.appendChild(headerRow);
+}
+
+const generateRows = (mappedData, inputIds, table, mode) => {
     mappedData.forEach((dataItem, i = 1) => {
         let row = document.createElement('tr');
         row.classList.add('table-secondary');
@@ -129,28 +129,13 @@ const generateRows = (mappedData, inputIds, table) => {
         row.appendChild(colName);
 
         let inputIdCol = document.createElement('td');
-        let select = document.createElement('Select');
-
-        inputIds.forEach((option, i) => {
-            if (i === 0) {
-                select.options.add(
-                    new Option("None", null, false)
-                )
-            }
-            (option === dataItem.colName) ?
-                select.options.add(
-                    new Option(option, option, true)
-                ) : select.options.add(
-                    new Option(option, option, false)
-                );
-        });
-
-        inputIdCol.appendChild(select);
+        (mode) ?
+            createSelect(inputIds, dataItem, inputIdCol) :
+            createText(dataItem, inputIdCol);
         row.appendChild(inputIdCol);
 
-
-
         /*
+            DEPRECATED
             MapButton Code 
         */
         // let mapButtonCol = document.createElement('td');
@@ -168,10 +153,38 @@ const generateRows = (mappedData, inputIds, table) => {
         //     cell.appendChild(textNode);
         //     row.appendChild(cell);
         // });
-
         table.appendChild(row);
         i++;
     });
+}
+
+const createSelect = (inputIds, dataItem, inputIdCol) => {
+    let select = document.createElement('Select');
+
+    inputIds.forEach((option, i) => {
+        if (i === 0) {
+            select.options.add(
+                new Option("None", null, false)
+            )
+        }
+        (option === dataItem.colName) ?
+            select.options.add(
+                new Option(option, option, true)
+            ) : select.options.add(
+                new Option(option, option, false)
+            );
+    });
+
+    inputIdCol.appendChild(select);
+}
+
+const createText = (dataItem, inputIdCol) => {
+    let textNode;
+    (dataItem.colName === dataItem.inputId) ?
+        textNode = document.createTextNode(dataItem.inputId) :
+        textNode = document.createTextNode('No Match Found');
+
+    inputIdCol.appendChild(textNode);
 }
 
 /* To Pre-Select Inputs which match with Col Names for Rendering  */
@@ -194,12 +207,12 @@ const keyMapper = (inputs, cols) => {
 };
 
 const mapButtonHandler = () => {
-    console.log('-'.repeat(50));
-    let table = document.getElementById("map-table");
-    let formIds = getSelectedIds(table);
-    let mappedData = [];
-    console.log(formIds);
     chrome.storage.local.get(['excelData'], (data) => {
+        console.log('-'.repeat(50));
+        let table = document.getElementById("map-table");
+        let formIds = getSelectedIds(table);
+        let mappedData = [];
+        console.log(formIds);
         let columnNames = Object.keys(data.excelData[0]);
         console.log(columnNames);
         console.log(data.excelData);
@@ -212,7 +225,7 @@ const mapButtonHandler = () => {
         console.log(mappedData);
         chrome.storage.local.set({ "mappings": mappedData });
 
-        /* Deprecated Code */
+        /* DEPRECATED */
         // data.excelData.forEach((row, i) => {
         //     let mappedObj = {};
         //     console.log(`row ${i}`);
@@ -255,6 +268,7 @@ document.getElementById("mode-switch").addEventListener("click", (e) => {
             console.log(`mode = ${newMode}`);
             let labelText = (newMode) ? "Manual Mapping Mode" : "Automatic Mapping Mode";
             document.getElementById("mode-switch-label").innerText = labelText;
+            generateTable();
         });
     });
 });

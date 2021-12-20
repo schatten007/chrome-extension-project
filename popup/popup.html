@@ -15,22 +15,24 @@
     <title>Popup</title>
   </head>
   <body>
-    <div class="container m-1">
-      <h1 class="h3 display-4">Excel Form Mapper</h1>
-      <h3>Current Row to fill: <span id="current-row">1</span></h3>
-      <button class="btn-sm btn-primary" id="fetchtags">
-        Detect Text Fields
-      </button>
+    <div class="container p-4">
+      <h3 class="h3 display-4">Excel Form Mapper</h3>
+      <div class="row">
+        <button class="btn-sm btn-primary col-6 my-1" id="fetchtags">
+          Detect Text Fields
+        </button>
+      </div>
 
       <div id="field-detected">
+        <button class="btn-sm btn-danger button-round" id="prev-row-button">
+          <
+        </button>
+        <span>Row <span id="current-row">1</span></span>
+        <button class="btn-sm btn-success button-round" id="next-row-button">
+          >
+        </button>
         <button class="btn-sm btn-secondary" id="fill-fields">
           Fill Form Fields
-        </button>
-        <button class="btn-sm btn-danger" id="prev-row-button">
-          Previous Row
-        </button>
-        <button class="btn-sm btn-success" id="next-row-button">
-          Next Row
         </button>
         <button class="btn-sm btn-primary" id="reset-rows-button">
           Reset Rows

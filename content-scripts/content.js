@@ -9,12 +9,12 @@ const getPageFormFieldsInformation = () => {
     });
     console.log('The extension got Inputs: ', inputs);
     console.log('Ids: ' + ids);
-    return [inputs, ids];
+    return ids;
 }
 
 // Function to Get and Store Form Fields inside chrome local storage
 const fetchFieldsHandler = () => {
-    const [inputs, ids] = getPageFormFieldsInformation();
+    const ids = getPageFormFieldsInformation();
 
     /* Code to check if Form Inputs with Unique ID's Found */
     // let idsFound = false;
